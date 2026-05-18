@@ -1,0 +1,58 @@
+env = "dev"
+
+# ── Project IDs (must already exist) ──────────────────────────────────────
+gar_project_id         = "my-gar-project"          # shared across all envs
+gke_project_id         = "my-dev-gke-project"
+attestor_project_id    = "my-dev-attestor-project"
+attestation_project_id = "my-dev-attestation-project"
+
+# ── GAR (shared; only creates once due to idempotency) ────────────────────
+gar_location      = "us-central1"
+gar_repository_id = "container-images"
+gar_description   = "Shared container image registry"
+
+# ── GKE clusters ──────────────────────────────────────────────────────────
+clusters = {
+  primary = {
+    name         = "dev-primary"
+    zone         = "us-central1-a"
+    node_count   = 2
+    machine_type = "e2-medium"
+    enforcement_mode = "DRYRUN_AUDIT_LOG_ONLY"  # audit-only in dev
+  }
+  batch = {
+    name         = "dev-batch"
+    zone         = "us-central1-b"
+    node_count   = 2
+    machine_type = "e2-medium"
+    enforcement_mode = "DRYRUN_AUDIT_LOG_ONLY"
+  }
+}
+
+# ── Attestors (each gets its own KMS key in the attestor project) ─────────
+attestors = {
+  build = {
+    display_name     = "Build attestor"
+    kms_keyring_name = "binauthz-keyring"
+    kms_key_name     = "dev-build-signing-key"
+    kms_location     = "global"
+    kms_key_algorithm    = "EC_SIGN_P256_SHA256"
+    kms_protection_level = "SOFTWARE"
+  }
+  security-scan = {
+    display_name     = "Security scan attestor"
+    kms_keyring_name = "binauthz-keyring"
+    kms_key_name     = "dev-security-scan-signing-key"
+    kms_location     = "global"
+    kms_key_algorithm    = "EC_SIGN_P256_SHA256"
+    kms_protection_level = "SOFTWARE"
+  }
+  qa = {
+    display_name     = "QA attestor"
+    kms_keyring_name = "binauthz-keyring"
+    kms_key_name     = "dev-qa-signing-key"
+    kms_location     = "global"
+    kms_key_algorithm    = "EC_SIGN_P256_SHA256"
+    kms_protection_level = "SOFTWARE"
+  }
+}

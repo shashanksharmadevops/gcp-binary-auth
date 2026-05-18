@@ -1,0 +1,43 @@
+env = "staging"
+
+# ── Project IDs ───────────────────────────────────────────────────────────
+gar_project_id         = "my-gar-project"          # same shared GAR project
+gke_project_id         = "my-staging-gke-project"
+attestor_project_id    = "my-staging-attestor-project"
+attestation_project_id = "my-staging-attestation-project"
+
+# ── GAR ───────────────────────────────────────────────────────────────────
+gar_location      = "us-central1"
+gar_repository_id = "container-images"
+gar_description   = "Shared container image registry"
+
+# ── GKE clusters ──────────────────────────────────────────────────────────
+clusters = {
+  primary = {
+    name         = "staging-primary"
+    zone         = "us-central1-a"
+    node_count   = 3
+    machine_type = "e2-standard-2"
+    enforcement_mode = "ENFORCED_BLOCK_AND_AUDIT_LOG"
+  }
+}
+
+# ── Attestors ─────────────────────────────────────────────────────────────
+attestors = {
+  build = {
+    display_name     = "Build attestor"
+    kms_keyring_name = "binauthz-keyring"
+    kms_key_name     = "staging-build-signing-key"
+    kms_location     = "global"
+    kms_key_algorithm    = "EC_SIGN_P256_SHA256"
+    kms_protection_level = "SOFTWARE"
+  }
+  security-scan = {
+    display_name     = "Security scan attestor"
+    kms_keyring_name = "binauthz-keyring"
+    kms_key_name     = "staging-security-scan-signing-key"
+    kms_location     = "global"
+    kms_key_algorithm    = "EC_SIGN_P256_SHA256"
+    kms_protection_level = "SOFTWARE"
+  }
+}
